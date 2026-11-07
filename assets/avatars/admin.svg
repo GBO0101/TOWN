@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6BCB77"/>
+      <stop offset="100%" stop-color="#4BA857"/>
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="48" fill="url(#bg)" opacity="0.2"/>
+  <circle cx="50" cy="50" r="44" fill="none" stroke="#6BCB77" stroke-width="1.5" opacity="0.3"/>
+  <!-- Cardigan body -->
+  <path d="M30 72 L30 52 Q30 40 38 36 L62 36 Q70 40 70 52 L70 72 Z" fill="#3D6B4F"/>
+  <!-- Cardigan buttons -->
+  <circle cx="50" cy="48" r="1.5" fill="#6BCB77"/>
+  <circle cx="50" cy="55" r="1.5" fill="#6BCB77"/>
+  <circle cx="50" cy="62" r="1.5" fill="#6BCB77"/>
+  <!-- Collar / shirt -->
+  <path d="M42 40 L50 48 L58 40" fill="none" stroke="white" stroke-width="1.5"/>
+  <path d="M42 40 L50 44 L58 40" fill="white" fill-opacity="0.3"/>
+  <!-- Neck -->
+  <rect x="44" y="34" width="12" height="6" rx="3" fill="#FDBCB4"/>
+  <!-- Head -->
+  <ellipse cx="50" cy="26" rx="15" ry="16" fill="#FDBCB4"/>
+  <!-- Ponytail hair -->
+  <path d="M35 22 Q35 8 50 6 Q65 8 65 22 L65 28 Q63 24 60 22" fill="#4A3728"/>
+  <path d="M35 22 Q33 28 33 32 Q33 26 35 22" fill="#4A3728"/>
+  <path d="M65 22 Q67 28 67 34 Q67 26 65 22" fill="#4A3728"/>
+  <!-- Ponytail -->
+  <circle cx="50" cy="4" r="4" fill="#4A3728"/>
+  <path d="M50 4 Q48 -4 42 -2 Q38 0 36 4 Q34 8 38 10" fill="#4A3728"/>
+  <path d="M50 4 Q52 -4 58 -2 Q62 0 64 4 Q66 8 62 10" fill="#4A3728"/>
+  <!-- Fringe -->
+  <path d="M36 16 Q40 10 50 8 Q60 10 64 16" fill="#4A3728"/>
+  <path d="M38 14 Q42 8 50 6 Q58 8 62 14" fill="#4A3728" opacity="0.6"/>
+  <!-- Hair clip -->
+  <rect x="54" y="12" width="6" height="3" rx="1" fill="#6BCB77"/>
+  <!-- Eyes (warm smile) -->
+  <ellipse cx="43" cy="25" rx="2.5" ry="3" fill="white"/>
+  <ellipse cx="57" cy="25" rx="2.5" ry="3" fill="white"/>
+  <circle cx="43" cy="26" r="1.5" fill="#333"/>
+  <circle cx="57" cy="26" r="1.5" fill="#333"/>
+  <!-- Eye highlights -->
+  <circle cx="42" cy="25" r="0.6" fill="white"/>
+  <circle cx="56" cy="25" r="0.6" fill="white"/>
+  <!-- Eyebrows -->
+  <path d="M39 20 Q43 18 47 20" fill="none" stroke="#4A3728" stroke-width="1.2"/>
+  <path d="M53 20 Q57 18 61 20" fill="none" stroke="#4A3728" stroke-width="1.2"/>
+  <!-- Nose -->
+  <path d="M50 28 L50 31 Q52 32 52 30" fill="none" stroke="#E8A090" stroke-width="1"/>
+  <!-- Big warm smile -->
+  <path d="M42 35 Q50 42 58 35" fill="none" stroke="#C07060" stroke-width="1.3"/>
+  <path d="M45 35 Q50 39 55 35" fill="#E8A090" opacity="0.3"/>
+  <!-- Blush -->
+  <ellipse cx="38" cy="33" rx="3.5" ry="2.5" fill="#F4A0B0" opacity="0.35"/>
+  <ellipse cx="62" cy="33" rx="3.5" ry="2.5" fill="#F4A0B0" opacity="0.35"/>
+  <!-- Arms -->
+  <rect x="28" y="50" width="5" height="22" rx="3" fill="#3D6B4F"/>
+  <rect x="67" y="50" width="5" height="22" rx="3" fill="#3D6B4F"/>
+  <!-- Hands holding clipboard -->
+  <circle cx="30" cy="72" r="3" fill="#FDBCB4"/>
+  <circle cx="70" cy="72" r="3" fill="#FDBCB4"/>
+  <!-- Mini clipboard -->
+  <rect x="55" y="56" width="8" height="10" rx="1" fill="#FFF" stroke="#999" stroke-width="0.5"/>
+  <line x1="57" y1="60" x2="61" y2="60" stroke="#999" stroke-width="0.5"/>
+  <line x1="57" y1="62" x2="61" y2="62" stroke="#999" stroke-width="0.5"/>
+  <line x1="57" y1="64" x2="60" y2="64" stroke="#999" stroke-width="0.5"/>
+  <rect x="57" y="56" width="4" height="2" rx="1" fill="#6BCB77"/>
+</svg>

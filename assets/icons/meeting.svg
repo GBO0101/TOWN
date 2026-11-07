@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+  <circle cx="20" cy="20" r="18" fill="#9B59B6" opacity="0.1"/>
+  <!-- Meeting table (oval top) -->
+  <ellipse cx="20" cy="18" rx="14" ry="6" fill="#7D3C98"/>
+  <ellipse cx="20" cy="17" rx="14" ry="5.5" fill="#8E44AD"/>
+  <ellipse cx="20" cy="16.5" rx="12" ry="3.5" fill="#A569BD" opacity="0.3"/>
+  <!-- Table edge highlight -->
+  <ellipse cx="20" cy="16" rx="12" ry="3" fill="none" stroke="#C39BD3" stroke-width="0.5" opacity="0.5"/>
+  <!-- Table legs -->
+  <rect x="11" y="22" width="1.5" height="5" rx="0.5" fill="#5B2C6F"/>
+  <rect x="27" y="22" width="1.5" height="5" rx="0.5" fill="#5B2C6F"/>
+  <rect x="19" y="22" width="1.5" height="5" rx="0.5" fill="#5B2C6F"/>
+  <!-- Chairs around table -->
+  <!-- Top chair -->
+  <rect x="17.5" y="5" width="5" height="4" rx="1" fill="#2C3E50"/>
+  <rect x="17.5" y="5" width="5" height="1" rx="0.5" fill="#566573"/>
+  <!-- Bottom chair -->
+  <rect x="17.5" y="31" width="5" height="4" rx="1" fill="#2C3E50"/>
+  <rect x="17.5" y="34" width="5" height="1" rx="0.5" fill="#566573"/>
+  <!-- Left chair -->
+  <rect x="4" y="16" width="4" height="5" rx="1" fill="#2C3E50"/>
+  <rect x="4" y="16" width="1" height="5" rx="0.5" fill="#566573"/>
+  <!-- Right chair -->
+  <rect x="32" y="16" width="4" height="5" rx="1" fill="#2C3E50"/>
+  <rect x="35" y="16" width="1" height="5" rx="0.5" fill="#566573"/>
+  <!-- Papers on table -->
+  <rect x="17" y="15" width="2.5" height="3" rx="0.3" fill="white" opacity="0.6"/>
+  <rect x="20" y="15.5" width="2" height="2.5" rx="0.3" fill="white" opacity="0.5"/>
+</svg>

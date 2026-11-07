@@ -1,0 +1,26 @@
+# 本機依賴、測試產物與上傳資料
+/node_modules/
+/coverage/
+/uploads/
+/.scratch/
+/test/*.cjs
+/paper-search-results/
+
+# 本機工具、工作紀錄與設定
+/.agents/
+/.codex/
+/.aws/
+/.flow/
+/.goopspec/
+/.opencode/
+/.anchored-summary.md
+/opencode.json
+/skills-lock.json
+/ponytail-audit.md
+.env
+.env.*
+npm-debug.log*
+
+# 獨立子專案
+/opencode-usage/
+/opencode-usage-sqlite/

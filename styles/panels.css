@@ -1,0 +1,88 @@
+/* 日誌與角色卡。 */
+.company-overview { flex-shrink: 0; display: grid; gap: 6px; padding: var(--space-3); border-bottom: 1px solid var(--border); background: #4d96ff08; font-size: 11px; line-height: 1.6; overflow-wrap: anywhere; }
+.company-overview-title { display: flex; justify-content: space-between; gap: var(--space-2); font-size: 12px; color: var(--text-bright); }
+.company-overview-title span { font-size: 10px; color: var(--accent-blue); }
+.company-details { display: grid; gap: 6px; }
+.panel-actions { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
+.panel-toggle { flex-shrink: 0; min-height: 28px; padding: 2px 6px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-card); color: var(--text-dim); font-size: 10px; cursor: pointer; }
+.panel-toggle:hover { color: var(--accent-blue); border-color: var(--accent-blue); }
+.panel-toggle:focus-visible, .product-overview summary:focus-visible { outline: 2px solid var(--accent-blue); outline-offset: 2px; }
+.company-decision { color: var(--text-dim); }
+.project-overview { display: flex; flex-direction: column; flex-shrink: 1; min-height: 0; padding: var(--space-3); border-bottom: 1px solid var(--border); }
+.project-overview:not(.is-collapsed):has(.project-progress-card) { min-height: 180px; }
+.project-overview-title, .project-card-heading { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-2); }
+.project-overview-title { margin-bottom: var(--space-2); font-size: 12px; color: var(--text-bright); }
+.project-overview-title span, .project-percent { flex-shrink: 0; font-size: 10px; color: var(--accent-blue); }
+.project-list { display: flex; flex-direction: column; gap: var(--space-2); min-height: 0; max-height: 280px; overflow-y: auto; }
+.project-progress-card { padding: var(--space-2); border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-card); font-size: 10px; line-height: 1.6; overflow-wrap: anywhere; }
+.project-card-heading h4 { min-width: 0; font-size: 11px; font-weight: 600; color: var(--text-bright); }
+.project-meter { height: 5px; margin: 6px 0; border-radius: 4px; background: #0006; overflow: hidden; }
+.project-meter span { display: block; height: 100%; background: var(--accent-blue); }
+.project-progress-card[data-status='completed'] .project-meter span { background: var(--accent-ok); }
+.project-progress-card[data-status='failed'] .project-meter span { background: var(--accent); }
+.project-work { color: var(--text); }
+.project-personnel { color: var(--accent-ok); }
+.project-team, .project-deadline, .project-empty { color: var(--text-dim); font-size: 10px; }
+.project-finance { color: var(--accent-warn); }
+.product-overview { flex-shrink: 0; max-height: 240px; overflow-y: auto; padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--border); font-size: 11px; line-height: 1.6; }
+.product-overview summary { cursor: pointer; color: var(--text-bright); }
+.product-overview summary span { color: var(--accent-blue); margin-left: var(--space-2); font-size: 10px; }
+.product-overview summary::after { content: '＋ 展開'; float: right; color: var(--text-dim); font-size: 10px; }
+.product-overview[open] summary::after { content: '− 縮小'; }
+.product-list { display: grid; gap: var(--space-2); margin-top: var(--space-2); }
+.timeline-panel:has(.product-overview[open]) .project-list { max-height: 180px; }
+.product-stage, .product-daily { color: var(--accent-ok); }
+.product-customers { color: var(--accent-blue); }
+.product-costs, .product-balance, .product-sales, .product-maintenance { color: var(--text-dim); }
+.product-maintenance.is-overdue, .project-deadline.is-overdue { color: var(--accent); }
+.timeline-panel { position: relative; }
+.timeline-title .panel-actions { font-size: 10px; }
+.timeline-panel:has(#timeline[hidden]) { min-height: 0; }
+.timeline-panel:has(#timeline[hidden]) .scroll-down-btn { display: none; }
+.timeline-panel:has(#timeline[hidden]) .project-overview:not(.is-collapsed) { flex: 1; }
+.timeline-panel:has(#timeline[hidden]) .project-list { max-height: none; }
+.timeline-panel:has(#timeline[hidden]):has(.project-overview.is-collapsed) .product-overview[open] { flex: 1; min-height: 0; max-height: none; }
+.timeline { flex: 1; min-height: 120px; overflow-y: auto; padding: var(--space-2) var(--space-3); }
+.timeline-empty { text-align: center; color: var(--text-dim); padding: 24px 0; font-size: 12px; }
+.day-sep { text-align: center; padding: 5px 0; margin: 5px 0; position: relative; }
+.day-sep::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--border); }
+.day-sep span { position: relative; background: var(--bg-panel); padding: 0 var(--space-2); color: var(--accent-warn); font-size: 11px; }
+.event-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-2); margin-bottom: var(--space-2); animation: fadeInUp 0.2s ease; overflow-wrap: anywhere; }
+.event-card:hover { border-color: var(--accent-blue); }
+.event-time { font-size: 10px; color: var(--text-dim); margin-bottom: 3px; }
+.event-text { font-size: 12px; line-height: 1.6; }
+.event-people { display: flex; flex-wrap: wrap; gap: var(--space-1); margin-top: var(--space-1); }
+.event-char { display: inline-flex; align-items: center; gap: 3px; padding: 1px 5px 1px 2px; border-radius: var(--radius-sm); background: color-mix(in srgb, var(--person-color) 15%, var(--bg-panel)); color: var(--text); font-size: 10px; }
+.scroll-down-btn { position: absolute; bottom: var(--space-2); left: 50%; transform: translateX(-50%); width: 36px; height: 36px; border: 1px solid var(--border); border-radius: 50%; background: var(--bg-card); color: var(--accent-blue); box-shadow: var(--shadow); font-size: 18px; opacity: 0; pointer-events: none; transition: opacity var(--transition); }
+.scroll-down-btn.show { opacity: 1; pointer-events: auto; }
+.scroll-down-btn:hover { background: var(--accent-blue); color: var(--bg); }
+
+.char-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: var(--space-3);
+  text-align: left;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color var(--transition), background var(--transition);
+}
+.char-card:hover { border-color: var(--person-color); background: color-mix(in srgb, var(--person-color) 8%, var(--bg-card)); }
+.char-card.away { background: var(--bg-panel); }
+.char-card.away .avatar { opacity: 0.5; filter: grayscale(0.5); }
+.char-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.char-name { font-size: 13px; font-weight: 700; color: var(--person-color); }
+.char-role { font-size: 11px; color: var(--text-dim); }
+.char-career { font-size: 10px; line-height: 1.5; color: var(--accent-blue); overflow-wrap: anywhere; }
+.char-status { display: flex; align-items: center; gap: var(--space-1); font-size: 11px; color: var(--accent-ok); }
+.char-status-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.char-card.away .char-status { color: var(--text-dim); }
+.dot { width: 5px; height: 5px; flex-shrink: 0; border-radius: 50%; background: var(--person-color); }
+.char-memory-count { font-size: 10px; line-height: 1.5; color: var(--accent-ok); }
+.char-card[data-health='low'] .char-memory-count { color: var(--accent); }
+.char-card[data-activity='health_leave'] .char-status { color: var(--accent-warn); }
+.char-card[data-activity='outside'] .char-status, .char-card[data-activity='meeting'] .char-status { color: var(--accent-blue); }
+.char-card[data-activity='break'] .char-status, .char-card[data-activity='lunch'] .char-status { color: var(--accent-warn); }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }

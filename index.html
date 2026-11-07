@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 辦公室 · 社畜模擬器</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <div class="header-left">
+      <span class="logo">🏢</span>
+      <h1>AI 辦公室</h1>
+      <span class="subtitle">社畜模擬器</span>
+    </div>
+      <div class="header-center">
+        <span class="day-display">📅 第 <strong id="dayCounter">1</strong> 天</span>
+        <span class="time-display" id="timeDisplay">☀️ 09:00 上班</span>
+        <!-- 打卡機移至標題列 -->
+        <button type="button" class="time-clock" id="timeClock" title="點擊查看遲到記錄">
+          <span class="clock-display" id="clockDisplay">🕐 打卡機</span>
+          <span class="clock-status" id="clockStatus">等待上班</span>
+        </button>
+      </div>
+    <div class="header-finance">
+      <span class="loan-display" id="loanDisplay">🏦 0/3筆 $0 利息 $0/日 收支 $0/日 資產 $1,000,000</span>
+      <div class="project-bar-wrap">
+        <div class="project-bar-bg">
+          <div class="project-bar-fill" id="projectBarFill"></div>
+        </div>
+        <span class="project-label" id="projectLabel">📋 無專案</span>
+      </div>
+      <span id="overtimePolicyDisplay" class="policy-display" title="老闆的加班政策">🕐 政策：嚴格</span>
+      <span id="companyDisplay" class="company-display">🏢 公司營運評估中</span>
+    </div>
+    <div class="header-right">
+      <button id="pauseBtn" class="btn btn-secondary">⏸ 暫停</button>
+      <button id="resetBtn" class="btn btn-ghost">⟳ 重置</button>
+      <button type="button" class="speed-display" id="speedDisplay" aria-label="切換模擬速度">1×</button>
+    </div>
+  </header>
+
+  <aside class="late-popup hidden" id="latePopup" aria-label="遲到記錄">
+    <div class="late-popup-header">
+      <span>🕐 遲到記錄</span>
+      <button class="late-popup-close" id="latePopupClose" aria-label="關閉遲到記錄">&times;</button>
+    </div>
+    <div class="late-popup-body" id="latePopupBody"></div>
+  </aside>
+
+  <!-- ===== MAIN LAYOUT ===== -->
+  <div class="main-layout">
+
+    <!-- LEFT: Office Scene -->
+    <section class="panel office-panel" aria-label="辦公室場景">
+      <div class="panel-title">
+        🏢 辦公室平面圖
+        <span class="door-status" id="doorStatus">🚪 關閉</span>
+      </div>
+      <div class="office-status" id="officeStatus">🟢 上班中</div>
+      <div class="office-scene" id="officeScene" tabindex="0" aria-label="辦公室平面圖，可橫向捲動">
+        <div class="scene-content" id="sceneContent">
+
+        <!-- ===== ROOM 1: 工作間（左下） ===== -->
+        <div class="room room-a">
+          <div class="room-label">💻 工作間</div>
+          <!-- 座位依公司容量動態增減 -->
+          <button type="button" class="furniture interactive" data-furniture="desk1">
+            <img src="assets/icons/desk.svg" class="furn-icon-svg" alt="">
+            <span class="furn-label" id="deskLabel_desk1">空座位</span>
+          </button>
+          <button type="button" class="furniture interactive" data-furniture="desk2">
+            <img src="assets/icons/desk.svg" class="furn-icon-svg" alt="">
+            <span class="furn-label" id="deskLabel_desk2">空座位</span>
+          </button>
+          <button type="button" class="furniture interactive" data-furniture="desk3">
+            <img src="assets/icons/desk.svg" class="furn-icon-svg" alt="">
+            <span class="furn-label" id="deskLabel_desk3">空座位</span>
+          </button>
+          <button type="button" class="furniture interactive" data-furniture="desk4">
+            <img src="assets/icons/desk.svg" class="furn-icon-svg" alt="">
+            <span class="furn-label" id="deskLabel_desk4">空座位</span>
+          </button>
+          <button type="button" class="furniture interactive" data-furniture="desk5">
+            <img src="assets/icons/desk.svg" class="furn-icon-svg" alt="">
+            <span class="furn-label" id="deskLabel_desk5">空座位</span>
+          </button>
+          <button type="button" class="furniture interactive" data-furniture="desk6">
+            <img src="assets/icons/desk.svg" class="furn-icon-svg" alt="">
+            <span class="furn-label" id="deskLabel_desk6">空座位</span>
+          </button>
+        </div>
+
+        <!-- ===== ROOM 2: 會議室 (右上) ===== -->
+        <div class="room room-meeting">
+          <div class="room-label">📋 會議室</div>
+          <button type="button" class="furniture interactive" data-furniture="meeting">
+            <img src="assets/icons/meeting.svg" class="furn-icon-svg" alt="">
+            <span class="furn-label" id="deskLabel_meeting">會議桌</span>
+          </button>
+          <div class="furniture" data-furniture="projector">
+            <span class="furn-icon">📺</span>
+            <span class="furn-label">投影幕</span>
+          </div>
+          <div class="furniture" data-furniture="tea">
+            <span class="furn-icon">☕</span>
+            <span class="furn-label">茶水台</span>
+          </div>
+        </div>
+
+        <!-- ===== ROOM 3: 老闆辦公室（左上） ===== -->
+        <div class="room room-boss">
+          <div class="room-label">👔 老闆辦公室</div>
+          <button type="button" class="furniture interactive" data-furniture="bossdesk">
+            <img src="assets/icons/bossdesk.svg" class="furn-icon-svg" alt="">
+            <span class="furn-label" id="deskLabel_boss_desk">老闆桌</span>
+          </button>
+          <div class="furniture" data-furniture="books">
+            <span class="furn-icon">📚</span>
+            <span class="furn-label">書櫃</span>
+          </div>
+        </div>
+
+        <!-- ===== ROOM 4: 茶水間 (右下左, 較小) ===== -->
+        <div class="room room-break">
+          <div class="room-label">☕ 茶水間</div>
+          <button type="button" class="furniture interactive" data-furniture="coffee">
+            <img src="assets/icons/coffee.svg" class="furn-icon-svg" alt="">
+            <span class="furn-label">咖啡機</span>
+          </button>
+          <button type="button" class="furniture interactive" data-furniture="sofa">
+            <img src="assets/icons/sofa.svg" class="furn-icon-svg" alt="">
+            <span class="furn-label">沙發</span>
+          </button>
+          <div class="furniture" data-furniture="fridge">
+            <span class="furn-icon">🧊</span>
+            <span class="furn-label">冰箱</span>
+          </div>
+          <div class="furniture" data-furniture="water">
+            <span class="furn-icon">💧</span>
+            <span class="furn-label">飲水機</span>
+          </div>
+        </div>
+
+        <!-- ===== ROOM 5: 廁所 (右下右) ===== -->
+        <div class="room room-toilet">
+          <div class="room-label">🚻 廁所</div>
+          <button type="button" class="furniture interactive" data-furniture="toilet1">
+            <img src="assets/icons/toilet.svg" class="furn-icon-svg" alt="">
+            <span class="furn-label">廁間 A</span>
+          </button>
+          <button type="button" class="furniture interactive" data-furniture="toilet2">
+            <img src="assets/icons/toilet.svg" class="furn-icon-svg" alt="">
+            <span class="furn-label">廁間 B</span>
+          </button>
+          <div class="furniture" data-furniture="wash">
+            <span class="furn-icon">🚰</span>
+            <span class="furn-label">洗手台</span>
+          </div>
+        </div>
+
+        <!-- ===== 大門 ===== -->
+        <button type="button" class="main-door" id="mainDoor" aria-label="查看大門狀態">
+          <img class="door-icon" src="assets/icons/door.svg" alt="">
+          <span class="door-label">大門</span>
+          <span class="door-arrow" id="doorArrow">⬇️</span>
+        </button>
+
+        <!-- ===== Characters layer ===== -->
+        <div class="characters-layer" id="charactersLayer"></div>
+
+      </div>
+    </div>
+      <div class="event-banner hidden" id="eventBanner">
+        <span class="event-banner-icon" id="eventBannerIcon">📋</span>
+        <span class="event-banner-name" id="eventBannerName">事件名稱</span>
+        <span class="event-banner-time" id="eventBannerTime">--:--</span>
+      </div>
+    </section>
+
+    <!-- RIGHT: Timeline -->
+    <section class="panel timeline-panel" aria-label="辦公室資訊">
+      <section class="company-overview" aria-label="公司自動經營狀態" data-collapsible>
+        <div class="company-overview-title"><strong>公司成長</strong><div class="panel-actions"><span>老闆自動決策</span><button type="button" class="panel-toggle" data-panel-toggle data-panel-label="公司成長" aria-controls="companyBody" aria-expanded="true" aria-label="縮小公司成長">− 縮小</button></div></div>
+        <div class="company-details" id="companyBody">
+          <p id="companyExpansion">空間評估中</p>
+          <p id="companyRecruitment">招募評估中</p>
+          <p class="company-decision" id="companyDecision">等待評估</p>
+          <p id="companyProfit">本月損益 $0</p>
+        </div>
+      </section>
+      <section class="project-overview" aria-label="專案工作進度" data-collapsible>
+        <div class="project-overview-title"><strong>專案進度</strong><div class="panel-actions"><span id="projectTotals">0 案進行中</span><button type="button" class="panel-toggle" data-panel-toggle data-panel-label="專案進度" aria-controls="projectList" aria-expanded="true" aria-label="縮小專案進度">− 縮小</button></div></div>
+        <div id="projectList" class="project-list"></div>
+      </section>
+      <details class="product-overview" id="productOverview">
+        <summary>自研與被動收入 <span id="productTotals">尚未立項</span></summary>
+        <p class="company-decision" id="productDecision">等待營運穩定後評估自研</p>
+        <div class="product-list" id="productList"></div>
+      </details>
+      <div class="panel-title timeline-title" data-collapsible><strong>📜 辦公室日誌</strong><div class="panel-actions"><span id="timelineSummary">最近 0 則</span><button type="button" class="panel-toggle" data-panel-toggle data-panel-label="辦公室日誌" aria-controls="timeline" aria-expanded="true" aria-label="縮小辦公室日誌">− 縮小</button></div></div>
+      <div class="timeline" id="timeline">
+        <div class="timeline-empty">模擬進行中，事件即將出現...</div>
+      </div>
+      <button class="scroll-down-btn" id="scrollDownBtn" title="回到最新事件">↓</button>
+    </section>
+  </div>
+
+  <!-- ===== BOTTOM: Character Cards ===== -->
+  <section class="characters-bar" id="charactersBar" aria-label="角色列表"></section>
+
+  <!-- ===== MEMORY MODAL ===== -->
+  <div class="modal-overlay hidden" id="memoryModal" role="dialog" aria-modal="true" aria-labelledby="modalCharName">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalCharName">🧑 角色</h2>
+        <button class="modal-close" id="modalCloseBtn" aria-label="關閉記憶庫">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="char-detail">
+          <div class="char-detail-role" id="modalCharRole"></div>
+          <div class="char-detail-personality" id="modalCharPersonality"></div>
+        </div>
+        <h3>📝 記憶庫</h3>
+        <div class="memory-list" id="modalMemoryList"></div>
+        <h3>🔗 同事關係</h3>
+        <div class="relations-list" id="modalRelationsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CHARACTER CARD POPUP ===== -->
+  <div class="char-popup hidden" id="charPopup" role="dialog" aria-labelledby="popupName">
+    <div class="char-popup-header">
+      <span class="char-popup-portrait" id="popupEmoji"></span>
+      <div class="char-popup-title">
+        <span class="char-popup-name" id="popupName">角色名稱</span>
+        <span class="char-popup-role" id="popupRole">職位</span>
+      </div>
+      <button class="char-popup-close" id="charPopupClose" aria-label="關閉角色資訊">&times;</button>
+    </div>
+    <div class="char-popup-body">
+      <div class="popup-row"><span class="popup-label">動作</span><span class="popup-value" id="popupAction">—</span></div>
+      <div class="popup-row"><span class="popup-label">心情</span><span class="popup-value" id="popupMood">😐 平靜</span></div>
+      <div class="popup-row"><span class="popup-label">健康</span><span class="popup-value" id="popupHealth">❤️ 100%</span></div>
+      <div class="popup-row"><span class="popup-label">財務</span><span class="popup-value" id="popupFinance">—</span></div>
+      <div class="popup-row"><span class="popup-label">資歷</span><span class="popup-value" id="popupCareer">—</span></div>
+      <div class="popup-row"><span class="popup-label">想法</span><span class="popup-value" id="popupThought">—</span></div>
+      <div class="popup-section-title">📝 記憶摘要 <button type="button" class="btn btn-ghost" id="popupMemoryBtn">完整記憶與關係</button></div>
+      <div class="popup-memories" id="popupMemories">
+        <div class="popup-mem-empty">尚無記憶</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/game-utils.js"></script>
+  <script src="js/company-finance.js"></script>
+  <script src="js/character-state.js"></script>
+  <script src="js/employee-health.js"></script>
+  <script src="js/employee-career.js"></script>
+  <script src="js/company-growth.js"></script>
+  <script src="js/character.js"></script>
+  <script src="js/profession-flow.js"></script>
+  <script src="js/project-work.js"></script>
+  <script src="js/project-quote.js"></script>
+  <script src="js/project-economy.js"></script>
+  <script src="js/passive-products.js"></script>
+  <script src="js/event-memory.js"></script>
+  <script src="js/office-art.js"></script>
+  <script src="js/office-layout.js"></script>
+  <script src="js/scene-view.js"></script>
+  <script src="js/panel-view.js"></script>
+  <script src="js/detail-view.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/simulation-day.js"></script>
+  <script src="js/project-pipeline.js"></script>
+  <script src="js/character-tick.js"></script>
+  <script src="js/office-events.js"></script>
+  <script src="js/tick-loop.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

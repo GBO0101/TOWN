@@ -1,0 +1,6 @@
+/* AI 辦公室視覺入口；順序：基礎規則 → 版面 → 場景 → 面板 → 彈窗。 */
+@import url('styles/tokens.css');
+@import url('styles/layout.css');
+@import url('styles/office.css');
+@import url('styles/panels.css');
+@import url('styles/overlays.css');

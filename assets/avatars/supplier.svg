@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <circle cx="60" cy="32" r="22" fill="#1a5276"/>
+  <rect x="36" y="48" width="48" height="48" rx="4" fill="#2e86c1"/>
+  <rect x="46" y="48" width="28" height="8" rx="2" fill="#85c1e9" opacity="0.3"/>
+  <rect x="40" y="62" width="40" height="30" rx="3" fill="#1b4f72"/>
+  <rect x="40" y="62" width="40" height="4" fill="#f39c12" rx="1"/>
+  <line x1="32" y1="92" x2="32" y2="110" stroke="#1a5276" stroke-width="5" stroke-linecap="round"/>
+  <line x1="88" y1="92" x2="88" y2="110" stroke="#1a5276" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="45" cy="32" r="3" fill="#fff"/>
+  <circle cx="75" cy="32" r="3" fill="#fff"/>
+  <path d="M50 40 Q60 46 70 40" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Briefcase -->
+  <rect x="42" y="96" width="36" height="14" rx="3" fill="#8B4513"/>
+  <rect x="56" y="96" width="8" height="14" rx="1" fill="#A0522D"/>
+  <rect x="42" y="96" width="36" height="3" rx="1" fill="#D2691E"/>
+  <!-- Clipboard in hand -->
+  <rect x="82" y="78" width="10" height="14" rx="1" fill="#f5f5dc"/>
+  <rect x="84" y="80" width="6" height="2" rx="0.5" fill="#333"/>
+  <rect x="84" y="84" width="6" height="2" rx="0.5" fill="#333"/>
+</svg>

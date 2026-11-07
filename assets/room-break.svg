@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <defs>
+    <pattern id="wood" x="0" y="0" width="30" height="12" patternUnits="userSpaceOnUse">
+      <rect width="30" height="12" fill="transparent"/>
+      <!-- Wood plank lines -->
+      <line x1="0" y1="6" x2="30" y2="6" stroke="#5A3A1A" stroke-width="0.3" opacity="0.12"/>
+      <line x1="0" y1="0" x2="30" y2="0" stroke="#5A3A1A" stroke-width="0.2" opacity="0.08"/>
+      <!-- Wood grain -->
+      <path d="M5 2 Q10 1.5 15 2 Q20 2.5 25 2" fill="none" stroke="#5A3A1A" stroke-width="0.2" opacity="0.08"/>
+      <path d="M3 8 Q8 7.5 13 8 Q18 8.5 23 8" fill="none" stroke="#5A3A1A" stroke-width="0.2" opacity="0.08"/>
+    </pattern>
+  </defs>
+  <rect width="100" height="100" fill="url(#wood)"/>
+</svg>

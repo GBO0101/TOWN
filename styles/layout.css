@@ -1,0 +1,83 @@
+/* 頁面區域與尺寸；面板內容的樣式放在 panels.css。 */
+body {
+  height: 100vh;
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: auto minmax(calc(var(--scene-min-height) + var(--scene-gutter) * 2 + 52px), 1fr) max-content;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.header {
+  display: grid;
+  grid-template-areas: 'brand clock controls' 'finance finance finance';
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  padding: var(--space-2) var(--space-4);
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+}
+.header-left { grid-area: brand; display: flex; align-items: center; gap: var(--space-2); white-space: nowrap; }
+.header-left .logo { font-size: 24px; }
+.header-left h1 { font-size: 17px; color: var(--text-bright); }
+.header-left .subtitle { font-size: 11px; color: var(--text-dim); }
+.header-center { grid-area: clock; display: flex; align-items: center; justify-content: center; gap: var(--space-2); }
+.day-display, .time-display { font-size: 12px; white-space: nowrap; }
+.time-display { font-size: 20px; font-variant-numeric: tabular-nums; font-weight: 700; color: var(--text-bright); }
+.header-right { grid-area: controls; display: flex; align-items: center; gap: var(--space-2); }
+.policy-display { font-size: 11px; white-space: nowrap; }
+.header-finance { grid-area: finance; display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2) var(--space-4); }
+.loan-display { flex: 1 1 460px; color: var(--accent-warn); font-size: 11px; line-height: 1.5; overflow-wrap: anywhere; }
+.equity-balance { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.daily-profit { color: var(--text-dim); }
+.daily-profit[data-direction='up'] { color: var(--accent-ok); }
+.daily-profit[data-direction='down'] { color: var(--accent); }
+.company-display { flex: 1 1 100%; font-size: 11px; color: var(--accent-blue); line-height: 1.5; overflow-wrap: anywhere; }
+.project-bar-wrap { display: flex; align-items: center; gap: var(--space-2); flex: 1 1 320px; min-width: 0; }
+.project-bar-bg { flex: 0 0 100px; height: 7px; border-radius: 5px; background: var(--bg-card); overflow: hidden; }
+.project-bar-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--accent-blue), var(--accent-ok)); transition: width var(--transition); }
+.project-label { font-size: 11px; color: var(--text-dim); overflow-wrap: anywhere; }
+.project-bar-fill.pulse { animation: progressPulse 0.3s ease; }
+@keyframes progressPulse { 50% { opacity: 0.5; } }
+
+.time-clock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+}
+.time-clock:hover { border-color: var(--accent-blue); }
+.clock-display { font-size: 11px; color: var(--accent-blue); }
+.clock-status { font-size: 10px; color: var(--text-dim); white-space: nowrap; }
+.clock-status.punched-in { color: var(--accent-ok); }
+.clock-status.punched-out { color: var(--accent); }
+
+.main-layout { display: grid; grid-template-columns: minmax(0, 1fr) var(--timeline-width); gap: var(--space-2); padding: var(--space-2); min-height: 0; }
+.panel { display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: hidden; background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); }
+.panel-title { display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; padding: var(--space-2) var(--space-3); font-size: 12px; font-weight: 600; color: var(--text-dim); background: #0002; border-bottom: 1px solid var(--border); }
+.door-status { font-size: 11px; font-weight: 400; color: var(--accent-warn); }
+.characters-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(192px, 100%), 1fr)); align-content: start; gap: var(--space-2); max-height: clamp(148px, 32dvh, 320px); padding: var(--space-2) var(--space-3); overflow-y: auto; background: var(--bg-panel); border-top: 1px solid var(--border); }
+
+@media (max-width: 1100px) {
+  :root { --timeline-width: 270px; }
+  .header-left .subtitle { display: none; }
+}
+@media (max-width: 760px), (max-height: 600px) {
+  body { height: auto; min-height: 100dvh; overflow: auto; grid-template-rows: auto auto max-content; }
+  .main-layout { grid-template-columns: minmax(0, 1fr); }
+  .office-scene { flex: none; height: calc(var(--scene-min-height) + var(--scene-gutter) * 2); }
+  .timeline-panel { height: auto; min-height: 640px; }
+  .timeline-panel .timeline { min-height: 240px; max-height: 400px; }
+}
+@media (max-width: 760px) {
+  .header { grid-template-areas: 'brand controls' 'clock clock' 'finance finance'; grid-template-columns: auto auto; gap: var(--space-2); padding: var(--space-2); }
+  .header-right { justify-content: flex-end; gap: var(--space-1); }
+  .header-center { justify-content: flex-start; }
+  .header-left h1 { font-size: 15px; }
+  .header-left .logo { font-size: 20px; }
+  .header-finance { gap: var(--space-2); }
+}

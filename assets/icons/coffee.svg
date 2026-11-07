@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+  <circle cx="20" cy="20" r="18" fill="#6BCB77" opacity="0.15"/>
+  <!-- Coffee machine body -->
+  <rect x="10" y="14" width="14" height="16" rx="2" fill="#6B3A1F"/>
+  <rect x="11" y="15" width="12" height="10" rx="1" fill="#8B5A2F"/>
+  <!-- Screen -->
+  <rect x="12" y="16" width="5" height="4" rx="0.5" fill="#2ECC71" opacity="0.8"/>
+  <!-- Buttons -->
+  <circle cx="19" cy="17" r="1" fill="#FFD93D"/>
+  <circle cx="19" cy="20" r="1" fill="#FF6B6B"/>
+  <!-- Dispenser area -->
+  <rect x="13" y="26" width="8" height="3" rx="0.5" fill="#4A2510"/>
+  <!-- Cup -->
+  <path d="M15 22 L16 26 L20 26 L21 22 Z" fill="white" stroke="#CCC" stroke-width="0.5"/>
+  <path d="M21 23 Q23 23.5 23 25 Q23 26.5 21 27" fill="none" stroke="#CCC" stroke-width="0.8"/>
+  <!-- Drip -->
+  <line x1="17" y1="22" x2="17" y2="23" stroke="#6B3A1F" stroke-width="0.5"/>
+  <line x1="19" y1="22" x2="19" y2="23" stroke="#6B3A1F" stroke-width="0.5"/>
+  <!-- Steam -->
+  <path d="M16 13 Q15 11 16 9" fill="none" stroke="#AAA" stroke-width="0.6" opacity="0.6"/>
+  <path d="M18 12 Q17 10 18 8" fill="none" stroke="#AAA" stroke-width="0.6" opacity="0.6"/>
+  <path d="M20 13 Q19 11 20 9" fill="none" stroke="#AAA" stroke-width="0.6" opacity="0.6"/>
+  <!-- Base -->
+  <rect x="9" y="30" width="16" height="2" rx="1" fill="#4A2510"/>
+  <rect x="11" y="29" width="12" height="2" rx="1" fill="#6B3A1F"/>
+</svg>

@@ -1,0 +1,85 @@
+/* 全站色彩、尺寸與共用圖形。 */
+:root {
+  color-scheme: dark;
+  --bg: #151528;
+  --bg-panel: #1a1a32;
+  --bg-card: #222244;
+  --bg-modal: #151528;
+  --text: #ddddee;
+  --text-dim: #9999bc;
+  --text-bright: #eeeeff;
+  --accent: #ff6b6b;
+  --accent-warn: #ffd93d;
+  --accent-ok: #6bcb77;
+  --accent-blue: #4d96ff;
+  --border: #333355;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --transition: 0.2s ease;
+  --font: 'Segoe UI', 'PingFang TC', 'Microsoft JhengHei', system-ui, sans-serif;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --timeline-width: 310px;
+  --roster-height: 132px;
+  --scene-width: 760px;
+  --scene-min-height: 480px;
+  --scene-gutter: 24px;
+  --avatar-scene: 42px;
+  --avatar-card: 48px;
+  --avatar-detail: 44px;
+  --avatar-tag: 20px;
+  --office-floor: #1a1a2e;
+  --office-wall: #3a3a5a;
+  --room-a: rgba(26,42,74,0.55);
+  --room-break: rgba(26,58,42,0.50);
+  --room-toilet: rgba(42,42,62,0.50);
+  --room-boss: rgba(58,42,26,0.55);
+  --shadow: 0 8px 32px #0006;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { font-family: var(--font); background: var(--bg); color: var(--text); }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--accent-blue); outline-offset: 3px; }
+[hidden], .hidden { display: none !important; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+.avatar {
+  display: inline-block;
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+  flex-shrink: 0;
+  object-fit: contain;
+  border-radius: 50%;
+  vertical-align: middle;
+  user-select: none;
+}
+.avatar--scene { --avatar-size: var(--avatar-scene); }
+.avatar--card { --avatar-size: var(--avatar-card); }
+.avatar--detail { --avatar-size: var(--avatar-detail); }
+.avatar--tag { --avatar-size: var(--avatar-tag); }
+
+.btn, .speed-display {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background var(--transition), border-color var(--transition);
+}
+.btn:hover, .speed-display:hover { background: var(--border); }
+.btn.active { background: var(--accent-ok); border-color: var(--accent-ok); color: var(--bg); }
+.btn-ghost { background: transparent; color: var(--text-dim); }
+.speed-display { color: var(--accent-ok); min-width: 42px; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

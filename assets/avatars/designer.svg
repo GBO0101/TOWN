@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#C084FC"/>
+      <stop offset="100%" stop-color="#A064DC"/>
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="48" fill="url(#bg)" opacity="0.2"/>
+  <circle cx="50" cy="50" r="44" fill="none" stroke="#C084FC" stroke-width="1.5" opacity="0.3"/>
+  <!-- Dress body -->
+  <path d="M32 72 L32 54 Q32 42 38 38 L62 38 Q68 42 68 54 L68 72 Z" fill="#2D1B4E"/>
+  <!-- Collar -->
+  <path d="M42 42 L50 50 L58 42" fill="none" stroke="#C084FC" stroke-width="1.5"/>
+  <!-- Neck -->
+  <rect x="44" y="36" width="12" height="6" rx="3" fill="#FDBCB4"/>
+  <!-- Head -->
+  <ellipse cx="50" cy="28" rx="15" ry="16" fill="#FDBCB4"/>
+  <!-- Bob hair -->
+  <path d="M35 24 Q35 8 50 6 Q65 8 65 24 L65 32 Q65 26 63 22 L63 32 Q63 26 60 22" fill="#1A1A2E"/>
+  <path d="M35 24 Q33 32 33 38 Q33 28 35 22" fill="#1A1A2E"/>
+  <path d="M65 24 Q67 32 67 38 Q67 28 65 22" fill="#1A1A2E"/>
+  <!-- Hair fringe -->
+  <path d="M36 18 Q40 12 50 10 Q60 12 64 18" fill="#1A1A2E"/>
+  <path d="M38 16 Q42 10 50 8 Q58 10 62 16" fill="#1A1A2E" opacity="0.6"/>
+  <!-- Beret -->
+  <ellipse cx="50" cy="12" rx="16" ry="5" fill="#C084FC"/>
+  <ellipse cx="50" cy="10" rx="14" ry="6" fill="#B074EC"/>
+  <circle cx="50" cy="6" r="2.5" fill="#C084FC"/>
+  <!-- Eyes -->
+  <ellipse cx="43" cy="26" rx="2.5" ry="3" fill="white"/>
+  <ellipse cx="57" cy="26" rx="2.5" ry="3" fill="white"/>
+  <circle cx="43" cy="27" r="1.5" fill="#333"/>
+  <circle cx="57" cy="27" r="1.5" fill="#333"/>
+  <!-- Eyelashes -->
+  <path d="M40 23 L42 24" stroke="#333" stroke-width="0.8"/>
+  <path d="M43 22 L43 24" stroke="#333" stroke-width="0.8"/>
+  <path d="M46 23 L44 24" stroke="#333" stroke-width="0.8"/>
+  <path d="M54 23 L56 24" stroke="#333" stroke-width="0.8"/>
+  <path d="M57 22 L57 24" stroke="#333" stroke-width="0.8"/>
+  <path d="M60 23 L58 24" stroke="#333" stroke-width="0.8"/>
+  <!-- Eyebrows -->
+  <path d="M39 20 Q43 18 47 20" fill="none" stroke="#333" stroke-width="1.2"/>
+  <path d="M53 20 Q57 18 61 20" fill="none" stroke="#333" stroke-width="1.2"/>
+  <!-- Nose -->
+  <path d="M50 29 L50 32" fill="none" stroke="#E8A090" stroke-width="1"/>
+  <!-- Smile -->
+  <path d="M43 36 Q50 41 57 36" fill="none" stroke="#C07060" stroke-width="1.2"/>
+  <!-- Blush -->
+  <ellipse cx="38" cy="34" rx="3" ry="2" fill="#F4A0B0" opacity="0.4"/>
+  <ellipse cx="62" cy="34" rx="3" ry="2" fill="#F4A0B0" opacity="0.4"/>
+  <!-- Arms -->
+  <rect x="30" y="52" width="5" height="20" rx="3" fill="#2D1B4E"/>
+  <rect x="65" y="52" width="5" height="20" rx="3" fill="#2D1B4E"/>
+  <!-- Hands -->
+  <circle cx="32" cy="72" r="3" fill="#FDBCB4"/>
+  <circle cx="68" cy="72" r="3" fill="#FDBCB4"/>
+  <!-- Pen behind ear -->
+  <line x1="66" y1="24" x2="68" y2="16" stroke="#FFD93D" stroke-width="1.5" stroke-linecap="round"/>
+  <rect x="66.5" y="18" width="3" height="2" rx="1" fill="#FFD93D"/>
+</svg>
