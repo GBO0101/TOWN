@@ -10,10 +10,17 @@ const PanelView = (() => {
     return timeline.scrollHeight - timeline.scrollTop - timeline.clientHeight < 30;
   }
 
+  function updateScrollButton(timeline) {
+    document.getElementById('scrollDownBtn').classList.toggle('show', !timeline.hidden && !isTimelineAtBottom(timeline));
+  }
+
   function init() {
     const roster = document.getElementById('charactersBar');
+    const timeline = document.getElementById('timeline');
+    timeline.addEventListener('scroll', () => updateScrollButton(timeline));
     if (typeof ResizeObserver !== 'undefined') {
       new ResizeObserver(() => document.documentElement.style.setProperty('--roster-height', `${roster.offsetHeight}px`)).observe(roster);
+      new ResizeObserver(() => updateScrollButton(timeline)).observe(timeline);
     }
     let followTimeline = true, timelineTop = 0;
     document.querySelector('.timeline-panel').addEventListener('click', event => {
@@ -28,6 +35,7 @@ const PanelView = (() => {
       button.setAttribute('aria-label', `${collapse ? '展開' : '縮小'}${button.dataset.panelLabel}`);
       button.textContent = collapse ? '＋ 展開' : '− 縮小';
       if (content.id === 'timeline' && !collapse) content.scrollTop = followTimeline ? content.scrollHeight : timelineTop;
+      if (content.id === 'timeline') updateScrollButton(content);
     });
   }
 
@@ -81,8 +89,10 @@ const PanelView = (() => {
     const list = document.getElementById('projectList');
     const existing = new Map([...list.children].filter(el => el.dataset.contractKey).map(el => [el.dataset.contractKey, el]));
     const rows = [...sim.projects, ...(sim.lastProjectResult ? [sim.lastProjectResult] : [])];
+    const workers = groupProjectWorkers();
+    const totals = {work: 0, done: 0};
     list.querySelector('.project-empty')?.remove();
-    document.getElementById('projectTotals').textContent = `${sim.projects.length} 案進行中`;
+    setViewText(document.getElementById('projectTotals'), `${sim.projects.length} 案進行中`);
     const hours = value => value.toLocaleString(undefined, {maximumFractionDigits: 1});
     rows.forEach((project, index) => {
       const key = String(project.contractId ?? project.id ?? index);
@@ -93,19 +103,23 @@ const PanelView = (() => {
         card.innerHTML = '<div class="project-card-heading"><h4></h4><span class="project-percent"></span></div><div class="project-meter" role="progressbar" aria-valuemin="0" aria-valuemax="100"><span></span></div><p class="project-work"></p><p class="project-personnel"></p><p class="project-team"></p><p class="project-finance"></p><p class="project-deadline"></p>';
         list.append(card);
       }
-      const snapshot = projectWorkSnapshot(project);
+      const snapshot = projectWorkSnapshot(project, workers);
+      if (index < sim.projects.length) {
+        totals.work += snapshot.work;
+        totals.done += snapshot.done;
+      }
       const status = project.status || 'active';
       card.style.order = index;
       card.dataset.projectId = project.id || '';
       card.dataset.status = status;
-      card.querySelector('h4').textContent = project.name || '工作專案';
-      card.querySelector('.project-percent').textContent = status === 'completed' ? (project.maintenance ? '維護完成' : project.source === 'product' ? '已上線' : '已交付') : status === 'cancelled' ? '已取消' : status === 'failed' ? '未交付' : `${snapshot.progress.toFixed(1)}%`;
+      setViewText(card.querySelector('h4'), project.name || '工作專案');
+      setViewText(card.querySelector('.project-percent'), status === 'completed' ? (project.maintenance ? '維護完成' : project.source === 'product' ? '已上線' : '已交付') : status === 'cancelled' ? '已取消' : status === 'failed' ? '未交付' : `${snapshot.progress.toFixed(1)}%`);
       const meter = card.querySelector('.project-meter');
       meter.setAttribute('aria-label', `${project.name || '專案'}工作進度`);
       meter.setAttribute('aria-valuenow', snapshot.progress.toFixed(2));
       meter.querySelector('span').style.width = `${snapshot.progress}%`;
-      card.querySelector('.project-work').textContent = `已完成 ${hours(snapshot.done)}/${hours(snapshot.work)} · 剩餘 ${hours(snapshot.remaining)} 標準人時`;
-      card.querySelector('.project-personnel').textContent = `工作 ${snapshot.working.length} 人 · 分派 ${snapshot.assigned.length} 人`;
+      setViewText(card.querySelector('.project-work'), `已完成 ${hours(snapshot.done)}/${hours(snapshot.work)} · 剩餘 ${hours(snapshot.remaining)} 標準人時`);
+      setViewText(card.querySelector('.project-personnel'), `工作 ${snapshot.working.length} 人 · 分派 ${snapshot.assigned.length} 人`);
       const names = snapshot.working.map(ch => ch.name);
       const eligible = sim.characters.filter(ch => ch.employment !== 'departed' && ch.field === project.type);
       const waiting = snapshot.assigned.length ? `${snapshot.assigned.map(ch => ch.name).join('、')} · 正在返回座位`
@@ -113,9 +127,9 @@ const PanelView = (() => {
         : project.source === 'product' && !PassiveProducts.canWork(project) ? '本日研發額度已用完，優先處理客戶合約'
         : sim.gameTime < 8 || sim.gameTime >= 17.5 ? '非正常上班時段，下一營業日接續'
         : '等待下一輪派工，人員可能正在休息、會議或其他案件';
-      card.querySelector('.project-team').textContent = names.length ? names.join('、') : status === 'active' ? waiting : `第 ${project.closedDay} 天結案`;
-      card.querySelector('.project-finance').textContent = project.maintenance ? '產品維護 · 無報酬，逾期將流失客戶' : project.source === 'product' ? '公司自研 · 完成上線後才產生營運收入'
-        : Number.isFinite(project.estimatedCost) ? `合約 $${project.reward.toLocaleString()} · 預估成本 $${project.estimatedCost.toLocaleString()} · 預估利潤 $${project.estimatedProfit.toLocaleString()}（${(project.estimatedProfit / project.reward * 100).toFixed(1)}%）` : '';
+      setViewText(card.querySelector('.project-team'), names.length ? names.join('、') : status === 'active' ? waiting : `第 ${project.closedDay} 天結案`);
+      setViewText(card.querySelector('.project-finance'), project.maintenance ? '產品維護 · 無報酬，逾期將流失客戶' : project.source === 'product' ? '公司自研 · 完成上線後才產生營運收入'
+        : Number.isFinite(project.estimatedCost) ? `合約 $${project.reward.toLocaleString()} · 預估成本 $${project.estimatedCost.toLocaleString()} · 預估利潤 $${project.estimatedProfit.toLocaleString()}（${(project.estimatedProfit / project.reward * 100).toFixed(1)}%）` : '');
       const daysLeft = project.deadlineDay - sim.day;
       card.querySelector('.project-deadline').textContent = status !== 'active' ? '' : project.maintenance
         ? daysLeft >= 0 ? `第 ${project.deadlineDay} 天內完成 · 逾期每日流失 ${PRODUCT_POLICY.maintenance.dailyChurn * 100}% 客戶`
@@ -127,9 +141,12 @@ const PanelView = (() => {
     });
     for (const card of existing.values()) card.remove();
     if (!rows.length) list.innerHTML = '<p class="project-empty">尚無進行中專案</p>';
+    return totals;
   }
 
-  function render(sim, hour) {
+  function renderTimeline(sim) {
+    const newest = sim.events[0]?.id ?? null;
+    if (_lastEvents === sim.events && _lastTimelineId === newest && _lastTimelineCount === sim.events.length) return;
     if (_lastEvents !== sim.events) {
       document.getElementById('timeline').replaceChildren();
       _lastTimelineCount = 0;
@@ -137,29 +154,6 @@ const PanelView = (() => {
       _lastDay = undefined;
       _lastEvents = sim.events;
     }
-    // 打卡機
-    const clockDisplay = document.getElementById('clockDisplay');
-    const clockStatus = document.getElementById('clockStatus');
-    if (clockDisplay && clockStatus) {
-      const lateToday = sim.lateRecords.filter(r => r.date === `${sim.day}`).length;
-      clockDisplay.textContent = `🕐 打卡機 (遲到${lateToday})`;
-      if (hour >= 8.0 && hour < 17.5) {
-        clockStatus.textContent = lateToday > 0 ? `⚠️ ${lateToday}人遲到` : `✅ 今日正常`;
-        clockStatus.className = 'clock-status' + (lateToday > 0 ? ' punched-out' : ' punched-in');
-      } else if (hour >= 17.5 && hour < 20.0) {
-        const leftCount = sim.characters.filter(c =>
-          c.employment !== 'departed' && sim.dailyPunch?.[c.id]?.punchedOut
-        ).length;
-        clockStatus.textContent = `🏠 ${leftCount}人已下班`;
-        clockStatus.className = 'clock-status punched-out';
-      } else {
-        clockStatus.textContent = '🌙 休息中';
-        clockStatus.className = 'clock-status';
-      }
-    }
-
-
-    // Timeline
     document.getElementById('timelineSummary').textContent = `最近 ${sim.events.length} 則`;
     const tlc = document.getElementById('timeline');
     const wasAtBottom = isTimelineAtBottom(tlc);
@@ -211,8 +205,30 @@ const PanelView = (() => {
         if (wasAtBottom) tlc.scrollTop = tlc.scrollHeight;
       }
     }
-    const sdb = document.getElementById('scrollDownBtn');
-    if (isTimelineAtBottom(tlc)) { sdb.classList.remove('show'); } else { sdb.classList.add('show'); }
+    updateScrollButton(tlc);
+  }
+
+  function render(sim, hour) {
+    renderTimeline(sim);
+    const clockDisplay = document.getElementById('clockDisplay');
+    const clockStatus = document.getElementById('clockStatus');
+    if (clockDisplay && clockStatus) {
+      const lateToday = sim.lateRecords.filter(r => r.date === `${sim.day}`).length;
+      clockDisplay.textContent = `🕐 打卡機 (遲到${lateToday})`;
+      if (hour >= 8.0 && hour < 17.5) {
+        clockStatus.textContent = lateToday > 0 ? `⚠️ ${lateToday}人遲到` : `✅ 今日正常`;
+        clockStatus.className = 'clock-status' + (lateToday > 0 ? ' punched-out' : ' punched-in');
+      } else if (hour >= 17.5 && hour < 20.0) {
+        const leftCount = sim.characters.filter(c =>
+          c.employment !== 'departed' && sim.dailyPunch?.[c.id]?.punchedOut
+        ).length;
+        clockStatus.textContent = `🏠 ${leftCount}人已下班`;
+        clockStatus.className = 'clock-status punched-out';
+      } else {
+        clockStatus.textContent = '🌙 休息中';
+        clockStatus.className = 'clock-status';
+      }
+    }
 
     // Character cards
     const bar = document.getElementById('charactersBar');
@@ -245,14 +261,14 @@ const PanelView = (() => {
       OfficeArt.updatePortrait(card.querySelector('.avatar'), ch);
       const moodPct = Math.round((ch.mood.value ?? 0.5)*100);
       const healthInfo = EmployeeHealth.snapshot(ch), health = healthInfo.health;
-      card.querySelector('.char-name').textContent = ch.name;
-      card.querySelector('.char-role').textContent = ch.role;
+      setViewText(card.querySelector('.char-name'), ch.name);
+      setViewText(card.querySelector('.char-role'), ch.role);
       const career = CharacterCareer.snapshot(ch);
-      card.querySelector('.char-career').textContent = career.label;
+      setViewText(card.querySelector('.char-career'), career.label);
       card.querySelector('.char-career').title = career.details;
-      card.querySelector('.char-status-text').textContent = `${OfficeArt.activity(ch)} · ${ch.mood.emoji} ${ch.mood.label}`;
+      setViewText(card.querySelector('.char-status-text'), `${OfficeArt.activity(ch)} · ${ch.mood.emoji} ${ch.mood.label}`);
       card.querySelector('.dot').hidden = ['off_duty', 'departed', 'health_leave'].includes(status.key);
-      card.querySelector('.char-memory-count').textContent = `🧠 ${ch.memories.length} 條記憶 · ${healthInfo.label}`;
+      setViewText(card.querySelector('.char-memory-count'), `🧠 ${ch.memories.length} 條記憶 · ${healthInfo.label}`);
       card.querySelector('.char-memory-count').title = healthInfo.details;
       card.dataset.health = health == null ? 'unknown' : health < 0.4 ? 'low' : 'ok';
       card.dataset.mood = moodPct > 50 ? 'ok' : 'low';
@@ -296,14 +312,13 @@ const PanelView = (() => {
       : '👤 尚無進行中的招募';
     document.getElementById('companyDecision').textContent = company.decision;
 
-    renderProjects(sim);
+    const totals = renderProjects(sim);
 
     // 進行中專案依工作量加權，不以單一案件代表整家公司。
     const projFill = document.getElementById('projectBarFill');
     const projLabel = document.getElementById('projectLabel');
     if (projFill && projLabel) {
       if (sim.projects.length) {
-        const totals = sim.projects.map(projectWorkSnapshot).reduce((sum, project) => ({work: sum.work + project.work, done: sum.done + project.done}), {work: 0, done: 0});
         const pct = totals.done / totals.work * 100;
         projFill.style.width = `${pct}%`;
         projLabel.textContent = `📋 進行中 ${sim.projects.length} 案 · 合計 ${pct.toFixed(1)}%`;

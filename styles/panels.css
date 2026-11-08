@@ -48,6 +48,7 @@
 .day-sep::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--border); }
 .day-sep span { position: relative; background: var(--bg-panel); padding: 0 var(--space-2); color: var(--accent-warn); font-size: 11px; }
 .event-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-2); margin-bottom: var(--space-2); animation: fadeInUp 0.2s ease; overflow-wrap: anywhere; }
+.event-card { content-visibility: auto; contain-intrinsic-block-size: auto 60px; }
 .event-card:hover { border-color: var(--accent-blue); }
 .event-time { font-size: 10px; color: var(--text-dim); margin-bottom: 3px; }
 .event-text { font-size: 12px; line-height: 1.6; }

@@ -1,6 +1,10 @@
 // Application state, initialization and UI controls.
 let _animFrame = null;
 let _tickInterval = null;
+let _sceneDirty = true;
+let _nextPanelRefresh = -Infinity;
+let _lastTickTime = 0;
+let _tickBacklog = 0;
 let sim = {
     gameTime: 7.5, // hours, decimal
     day: 1,
@@ -187,23 +191,58 @@ function initSim() {
 
 function togglePause() {
     sim.paused = !sim.paused;
+    syncTickClock();
+    if (sim.paused) {
+        _sceneDirty = true;
+        _nextPanelRefresh = -Infinity;
+    }
     document.getElementById('pauseBtn').textContent = sim.paused ? '▶ 繼續' : '⏸ 暫停';
     document.getElementById('pauseBtn').classList.toggle('active', sim.paused);
     notify(sim.paused ? '模擬已暫停' : '模擬繼續', 1500);
 }
 
 function animLoop() {
-    render();
+    if (_sceneDirty) {
+        _sceneDirty = false;
+        const now = performance.now();
+        const refreshPanels = now >= _nextPanelRefresh;
+        render(refreshPanels);
+        if (refreshPanels) _nextPanelRefresh = now + Math.min(1000, Math.max(125, (performance.now() - now) * 4));
+    }
     _animFrame = requestAnimationFrame(animLoop);
+}
+
+function syncTickClock() {
+    _lastTickTime = performance.now();
+    _tickBacklog = 0;
+}
+
+function advanceSimulation() {
+    const now = performance.now();
+    const stepMs = 1000 / CFG.tickHz;
+    const elapsed = now - _lastTickTime;
+    _lastTickTime = now;
+    if (sim.paused) return;
+
+    // Preserve fixed steps while capping how much delayed work can run at once.
+    _tickBacklog = Math.min(_tickBacklog + elapsed, stepMs * 4);
+    const workUntil = now + stepMs / 2;
+    while (_tickBacklog >= stepMs) {
+        _tickBacklog -= stepMs;
+        for (let i = 0; i < (sim.speed || 1); i++) tick(1 / CFG.tickHz);
+        _sceneDirty = true;
+        if (performance.now() >= workUntil) break;
+    }
 }
 
 function startLoops() {
     if (_animFrame !== null) cancelAnimationFrame(_animFrame);
     if (_tickInterval !== null) clearInterval(_tickInterval);
+    _sceneDirty = true;
+    _nextPanelRefresh = -Infinity;
+    syncTickClock();
     _animFrame = requestAnimationFrame(animLoop);
-    _tickInterval = setInterval(() => {
-        for (let i = 0; i < (sim.speed || 1); i++) tick(1 / CFG.tickHz);
-    }, 1000 / CFG.tickHz);
+    _tickInterval = setInterval(advanceSimulation, 1000 / CFG.tickHz);
 }
 
 function resetAll() {
@@ -251,6 +290,7 @@ function boot() {
     document.getElementById('speedDisplay').addEventListener('click', event => {
         const speeds = [1, 2, 3, 5, 10];
         sim.speed = speeds[(speeds.indexOf(sim.speed) + 1) % speeds.length];
+        syncTickClock();
         event.currentTarget.textContent = sim.speed + '×';
     });
     initFurniture();

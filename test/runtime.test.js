@@ -276,6 +276,28 @@ test('animation, pause, speed and repeated resets keep one simulation loop', asy
   expect(office.errors).toEqual([]);
 });
 
+test('10× recovers a delayed interval in fixed steps and bounds overdue work', async () => {
+  office = await loadOffice();
+  const document = office.window.document;
+  const speed = document.getElementById('speedDisplay');
+  const pause = document.getElementById('pauseBtn');
+  for (let i = 0; i < 4; i++) speed.click();
+  const start = office.evaluate('sim.gameTime');
+  office.step(125);
+  expect(office.evaluate('sim.gameTime') - start).toBeCloseTo(0.08);
+  office.step(25);
+  expect(office.evaluate('sim.gameTime') - start).toBeCloseTo(0.12);
+  office.step(1000);
+  expect(office.evaluate('sim.gameTime') - start).toBeCloseTo(0.28);
+  pause.click();
+  office.step(1000);
+  expect(office.evaluate('sim.gameTime') - start).toBeCloseTo(0.28);
+  pause.click();
+  office.step();
+  expect(office.evaluate('sim.gameTime') - start).toBeCloseTo(0.32);
+  expect(office.errors).toEqual([]);
+});
+
 test('the clock opens attendance records with the employee, punch time and late minutes', async () => {
   office = await loadOffice();
   office.evaluate('sim.gameTime = 8.25; punchIn("tech"); render();');
