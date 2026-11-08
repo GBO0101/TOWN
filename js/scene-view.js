@@ -27,12 +27,12 @@ const SceneView = (() => {
     el.dataset.meeting = String(!outside && (Number.isInteger(person.targetPos?.meetingSeat) || person.state !== 'walking' && Number.isInteger(person.pos.meetingSeat)));
     if (!visitor) el.dataset.activity = CharacterRules.status(person).key;
     OfficeArt.updatePortrait(el.querySelector('.avatar'), person);
-    el.querySelector('.char-name-badge').textContent = person.name;
+    setViewText(el.querySelector('.char-name-badge'), person.name);
     const action = visitor ? person.currentAction || '拜訪中' : OfficeArt.activity(person);
-    el.querySelector('.char-state-badge').textContent = action + (person.mood ? ` · ${person.mood.emoji}` : '');
+    setViewText(el.querySelector('.char-state-badge'), action + (person.mood ? ` · ${person.mood.emoji}` : ''));
     el.setAttribute('aria-label', `${person.name} · ${action}`);
     el.title = `${person.name} · ${action}`;
-    el.querySelector('.char-thought').textContent = visitor ? person.currentAction || '' : OfficeArt.activity(person);
+    setViewText(el.querySelector('.char-thought'), visitor ? person.currentAction || '' : action);
     const progress = el.querySelector('.char-progress-bar');
     const task = person.task;
     const timedWork = isProjectWorkTask(task) && person.isPresent && person.state !== 'walking' &&
@@ -49,7 +49,7 @@ const SceneView = (() => {
     el.querySelector('.char-progress-fill').style.width = `${percent}%`;
     const speech = el.querySelector('.char-speech-bubble');
     speech.hidden = !speaking;
-    speech.textContent = speaking ? person.speech.text : '';
+    setViewText(speech, speaking ? person.speech.text : '');
   }
 
   function flashMood(el, person, sim) {
@@ -96,20 +96,20 @@ const SceneView = (() => {
     for (const el of stale.values()) el.remove();
 
     const isDoorOpen = (hour >= 8 && hour < 8.5) || (hour >= 17.5 && hour < 20);
-    document.getElementById('doorStatus').textContent = isDoorOpen ? '🚪 大門開啟' : '🚪 大門關閉';
+    setViewText(document.getElementById('doorStatus'), isDoorOpen ? '🚪 大門開啟' : '🚪 大門關閉');
     document.getElementById('doorArrow').classList.toggle('active', isDoorOpen);
     const workers = sim.characters.filter(ch => ch.employment !== 'departed');
     const working = workers.filter(ch => ['working', 'internal'].includes(CharacterRules.status(ch).key)).length;
     const outside = workers.filter(ch => CharacterRules.status(ch).key === 'outside').length;
-    document.getElementById('officeStatus').textContent = isLunchTime(hour) ? `🟡 午餐時段 · ${working} 人工作 · 效率 ${Math.round(CFG.lunchEfficiency * 100)}%`
+    setViewText(document.getElementById('officeStatus'), isLunchTime(hour) ? `🟡 午餐時段 · ${working} 人工作 · 效率 ${Math.round(CFG.lunchEfficiency * 100)}%`
       : hour >= 17.5 ? (working ? `🟠 ${working} 人加班中` : '⚫ 下班時段')
-      : hour >= 8 ? `🟢 ${working} 人工作 · ${outside} 人外勤` : '⚫ 上班前準備';
+      : hour >= 8 ? `🟢 ${working} 人工作 · ${outside} 人外勤` : '⚫ 上班前準備');
 
     for (const desk of [...CompanyGrowth.desks(), 'boss_desk']) {
       const el = document.getElementById(`deskLabel_${desk}`);
       const person = sim.characters.find(ch => ch.deskId === desk && ch.employment !== 'departed');
       const status = person && CharacterRules.status(person);
-      el.textContent = person ? `${person.emoji} ${person.name}${person.isPresent ? '' : ['outside', 'lunch'].includes(status.key) ? ' ↗' : ' 💤'}` : '🪑 空座位';
+      setViewText(el, person ? `${person.emoji} ${person.name}${person.isPresent ? '' : ['outside', 'lunch'].includes(status.key) ? ' ↗' : ' 💤'}` : '🪑 空座位');
       el.title = person ? `${person.name} · ${OfficeArt.activity(person)}` : '空座位';
       el.style.color = person?.isPresent ? person.color : 'var(--text-dim)';
     }

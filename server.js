@@ -35,6 +35,22 @@ function respond(res, status, message) {
   res.end(message);
 }
 
+const pendingReads = new Map();
+
+function readPublicFile(file) {
+  const pending = pendingReads.get(file);
+  if (pending) return pending;
+  // 合併同一路徑的重疊讀取，完成後讓下個請求讀取目前的檔案。
+  const reading = (async () => {
+    const filePath = await realpath(path.join(ROOT, file));
+    const relative = path.relative(ROOT, filePath).split(path.sep).join('/');
+    if (!isPublicFile(relative)) return null;
+    return { data: await readFile(filePath), type: MIME_TYPES[path.extname(filePath)] };
+  })().finally(() => pendingReads.delete(file));
+  pendingReads.set(file, reading);
+  return reading;
+}
+
 const server = http.createServer(async (req, res) => {
   let pathname;
   try {
@@ -46,12 +62,10 @@ const server = http.createServer(async (req, res) => {
   if (!pathname.startsWith('/') || !isPublicFile(file)) return respond(res, 404, '404 Not Found');
 
   try {
-    const filePath = await realpath(path.join(ROOT, file));
-    const relative = path.relative(ROOT, filePath).split(path.sep).join('/');
-    if (!isPublicFile(relative)) return respond(res, 404, '404 Not Found');
-    const data = await readFile(filePath);
-    res.writeHead(200, { 'Content-Type': MIME_TYPES[path.extname(filePath)], 'X-Content-Type-Options': 'nosniff' });
-    res.end(data);
+    const asset = await readPublicFile(file);
+    if (!asset) return respond(res, 404, '404 Not Found');
+    res.writeHead(200, { 'Content-Type': asset.type, 'X-Content-Type-Options': 'nosniff' });
+    res.end(asset.data);
   } catch {
     respond(res, 404, '404 Not Found');
   }

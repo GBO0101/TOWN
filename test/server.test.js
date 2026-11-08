@@ -1,6 +1,9 @@
 import { afterAll, expect, test } from 'vitest';
 import { spawn } from 'node:child_process';
+import { randomUUID } from 'node:crypto';
+import { rm, writeFile } from 'node:fs/promises';
 import { request } from 'node:http';
+import path from 'node:path';
 
 const root = process.cwd();
 let child;
@@ -91,6 +94,21 @@ test('serves percent-encoded public paths and rejects malformed encoding', async
   expect((await get('/js/%61pp.js')).status).toBe(200);
   expect((await get('/assets/%E0%A4%A')).status).toBe(400);
   expect((await get('/')).status).toBe(200);
+});
+
+test('concurrent static requests see the current file after a miss or an edit', async () => {
+  const url = `/styles/server-test-${randomUUID()}.css`;
+  const file = path.join(root, url.slice(1));
+  const batch = () => Promise.all(Array.from({length: 16}, () => get(url)));
+  try {
+    expect((await batch()).every(response => response.status === 404)).toBe(true);
+    await writeFile(file, 'body { color: #123; }');
+    expect((await batch()).every(response => response.status === 200 && response.body === 'body { color: #123; }')).toBe(true);
+    await writeFile(file, 'body { color: #456; }');
+    expect((await batch()).every(response => response.status === 200 && response.body === 'body { color: #456; }')).toBe(true);
+  } finally {
+    await rm(file, {force: true});
+  }
 });
 
 test('serves every imported visual stylesheet and its background assets', async () => {

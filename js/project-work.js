@@ -14,7 +14,12 @@ function projectDeadlineDays(project) {
 }
 
 function selectWorkProject(ch) {
-    const peers = project => projectWorkers(project).filter(worker => worker.id !== ch.id);
+    const candidates = sim.projects.filter(project => (project.progress < 100 || project.progress == null) &&
+        (project.source !== 'product' || sim.gameTime < 17.5 && PassiveProducts.canWork(project)));
+    if (candidates.length <= 1) return candidates[0];
+    const groups = groupProjectWorkers();
+    const peersByProject = new Map(candidates.map(project => [project, projectWorkers(project, groups).filter(worker => worker.id !== ch.id)]));
+    const peers = project => peersByProject.get(project);
     const finishing = project => !peers(project).length &&
         (project.work || 100) - (project.workDone || 0) <= projectSkill(ch, project.type) * EmployeeHealth.efficiency(ch) * 0.5;
     const waiting = project => {
@@ -26,9 +31,7 @@ function selectWorkProject(ch) {
         const remaining = Math.max(0, (project.work || 100) - (project.workDone ?? (project.progress || 0) * (project.work || 100) / 100));
         return remaining / (assigned + projectSkill(ch, project.type) * EmployeeHealth.efficiency(ch)) / Math.max(1, (project.deadlineDay || sim.day + 1) - sim.day);
     };
-    return [...sim.projects].filter(project => (project.progress < 100 || project.progress == null) &&
-        (project.source !== 'product' || sim.gameTime < 17.5 && PassiveProducts.canWork(project)))
-        .sort((a, b) => projectSkill(ch, b.type) - projectSkill(ch, a.type) ||
+    return candidates.sort((a, b) => projectSkill(ch, b.type) - projectSkill(ch, a.type) ||
             Number(!!b.maintenance) - Number(!!a.maintenance) ||
             Number(!peers(b).length) - Number(!peers(a).length) || Number(finishing(b)) - Number(finishing(a)) ||
             waiting(b) - waiting(a) || pressure(b) - pressure(a) || a.deadlineDay - b.deadlineDay)[0];
@@ -38,9 +41,19 @@ function isProjectWorkTask(task) {
     return !!task && !task.isOutside && (task.type === 'work' || task.type === 'overtime' || !!task.roleAction);
 }
 
-function projectWorkers(project) {
-    return sim.characters.filter(ch => ch.employment !== 'departed' && !EmployeeHealth.onLeave(ch) && ch.isPresent && isProjectWorkTask(ch.task) &&
-        ch.task.projectId === project.id && (ch.task.contractId == null || ch.task.contractId === project.contractId));
+function groupProjectWorkers() {
+    const groups = new Map();
+    for (const ch of sim.characters) {
+        if (ch.employment === 'departed' || EmployeeHealth.onLeave(ch) || !ch.isPresent || !isProjectWorkTask(ch.task)) continue;
+        const id = ch.task.projectId;
+        if (!groups.has(id)) groups.set(id, []);
+        groups.get(id).push(ch);
+    }
+    return groups;
+}
+
+function projectWorkers(project, groups = groupProjectWorkers()) {
+    return (groups.get(project.id) || []).filter(ch => ch.task.contractId == null || ch.task.contractId === project.contractId);
 }
 
 function finishProjectWork(project) {
@@ -87,10 +100,10 @@ function updateProjectWork() {
     for (const ch of sim.characters) contributeToProject(ch.id, ch.task);
 }
 
-function projectWorkSnapshot(project) {
+function projectWorkSnapshot(project, groups) {
     const work = project.work || 100;
     const done = Math.max(0, Math.min(work, project.workDone ?? (project.progress || 0) * work / 100));
-    const assigned = projectWorkers(project);
+    const assigned = projectWorkers(project, groups);
     const working = assigned.filter(ch => ch.state !== 'walking' && POS[ch.deskId] && distance(ch.pos, POS[ch.deskId]) < 0.5 &&
         Number.isFinite(ch.task.startedGT) && ch.task.startedGT <= sim.gameTime && ch.task.endGT > sim.gameTime &&
         (ch.task.startedDay == null || ch.task.startedDay === sim.day));
